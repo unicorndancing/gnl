@@ -1,8 +1,7 @@
 #include <stdlib.h>
 #include <unistd.h>
+#include <sys/stat.h>
+#include <fcntl.h>
 
-#ifndef BUFFER_SIZE
-# define BUFFER_SIZE = 1
-# endif
 
-int readgtuff(int fd, int BUFFER_SIZE, int truclis);
+char *get_next_line(int fd);
