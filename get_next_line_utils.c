@@ -6,9 +6,10 @@
 /*   By: mlapique <mlapique@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/12 14:10:08 by mlapique          #+#    #+#             */
-/*   Updated: 2023/11/12 14:10:40 by mlapique         ###   ########.fr       */
+/*   Updated: 2023/11/14 14:35:23 by mlapique         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
 #include "get_next_line.h"
 
 int	ft_strlen(const char *str)
@@ -21,6 +22,19 @@ int	ft_strlen(const char *str)
 		i++;
 	}
 	return (i);
+}
+
+char	*ft_strdup(const char *s)
+{
+	char	*result;
+	size_t	len;
+
+	len = ft_strlen((char *)s) + 1;
+	result = malloc(sizeof(char) * len);
+	if (!result)
+		return (0);
+	result = ft_memmove(result, s, len);
+	return (result);
 }
 
 char	*ft_strjoin(char const *s1, char const *s2)
@@ -47,16 +61,43 @@ char	*ft_strjoin(char const *s1, char const *s2)
 	result[totlen - 1] = '\0';
 	return (result);
 }
-
-char	*ft_strdup(const char *s)
+void	*ft_memcpy(void *dest, const void *src, int n)
 {
-	char	*result;
-	size_t	len;
+	int				i;
+	unsigned char	*destcpy;
+	unsigned char	*srccpy;
 
-	len = ft_strlen((char *)s) + 1;
-	result = malloc(sizeof(char) * len);
-	if (!result)
-		return (0);
-	result = ft_memmove(result, s, len);
-	return (result);
+	destcpy = (unsigned char *) dest;
+	srccpy = (unsigned char *) src;
+	if (!dest && !src)
+		return (NULL);
+	i = 0;
+	while (i < n)
+	{
+		destcpy[i] = srccpy[i];
+		i++;
+	}
+	return (dest);
 }
+
+void	*ft_memmove(void *dest, const void *src, size_t n)
+{
+	size_t			i;
+	unsigned char	*srccpy;
+	unsigned char	*destcpy;
+
+	destcpy = (unsigned char *)dest;
+	srccpy = (unsigned char *)src;
+	i = 0;
+	if (src < dest)
+	{
+		while (n--)
+		{
+			destcpy[n] = srccpy[n];
+		}
+		return (dest);
+	}
+	ft_memcpy(dest, src, n);
+	return (dest);
+}
+

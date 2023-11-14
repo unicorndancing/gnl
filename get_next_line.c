@@ -3,10 +3,18 @@
 # define BUFFER_SIZE = 5
 # endif
 
+void	writestuff(int trucecri, char *str)
+{
+	write(1, str, trucecri);
+}
 int	ft_readstuff(int fd, int truclis, char *stock)
 {
-	int	i;
+	int		i;
+	char	*truc;
+	int		veriftruc;
 
+	veriftruc = 0;
+	truc = NULL;
 	i = 0;
 	stock = malloc(sizeof (char) * (BUFFER_SIZE + 1));
 	if (!stock)
@@ -15,31 +23,17 @@ int	ft_readstuff(int fd, int truclis, char *stock)
 	{
 		i = 0;
 		truclis = read(fd, stock, BUFFER_SIZE);
+		veriftruc += truclis;
 		stock[truclis] = '\0';
-		ft_copystuff(truclis, stock);
-		while (i < truclis && (stock[i] != '\n' || stock[i] != '\0'))
+		truc = ft_strjoin(truc, stock);
+		while (i < truclis && stock[i] != '\n')
 			i++;
 	}
-	return (truclis);
-}
-
-char	*ft_copystuff(int truclis, char *stock)
-{
-	char	*truc;
-	int		i;
-
 	i = 0;
-	truc = malloc(sizeof (char) * truclis);
-	if (!truc)
-		return (NULL);
-	while (i < truclis)
-	{
-		truc[i] = stock[i];
-		i++;
-	}
-	return (truc);
+	while (truc[i++] != '\n'){}	
+	writestuff(i, truc);
+	return (i);
 }
-
 char	*get_next_line(int fd)
 {
 	static char	*stock;
@@ -51,7 +45,7 @@ char	*get_next_line(int fd)
 	buffer = NULL;
 	truclis = 0;
 	truclis = ft_readstuff(fd, truclis, stock);
-	buffer = ft_copystuff(truclis, stock);
+	//buffer = ft_copystuff(truclis, stock);
 	return (buffer);
 }
 
