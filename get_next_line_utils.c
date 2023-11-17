@@ -6,7 +6,7 @@
 /*   By: mlapique <mlapique@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/12 14:10:08 by mlapique          #+#    #+#             */
-/*   Updated: 2023/11/14 14:35:23 by mlapique         ###   ########.fr       */
+/*   Updated: 2023/11/17 17:25:05 by mlapique         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ char	*ft_strchr(const char *s, int c)
 	return (NULL);
 }
 
-char	*ft_strdup(const char *s)
+char	*ft_strdup(const char *s, int to_free)
 {
 	char	*result;
 	size_t	len;
@@ -51,6 +51,8 @@ char	*ft_strdup(const char *s)
 	if (!result)
 		return (0);
 	result = ft_memmove(result, s, len);
+	if (to_free == 1)
+		free ((void*)s);
 	return (result);
 }
 
@@ -64,18 +66,22 @@ char	*ft_strjoin(char const *s1, char const *s2)
 	if (!s1 && !s2)
 		return (NULL);
 	if (s1 && !s2)
-		return (ft_strdup((char *)s1));
+		return (ft_strdup((char *)s1, 1));
 	if (!s1 && s2)
-		return (ft_strdup((char *)s2));
+		return (ft_strdup((char *)s2, 0));
 	s1_len = ft_strlen((char *)s1);
 	s2_len = ft_strlen((char *)s2);
 	totlen = s1_len + s2_len + 1;
 	result = malloc(sizeof(char) * totlen);
 	if (!result)
+	{
+		free((void*)s1);
 		return (0);
+	}
 	ft_memmove(result, s1, s1_len);
 	ft_memmove(result + s1_len, s2, s2_len);
 	result[totlen - 1] = '\0';
+	free ((void*)s1);
 	return (result);
 }
 

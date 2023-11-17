@@ -6,13 +6,15 @@
 
 char 	*theline(char *str)
 {
-	int i;
-	char *truc;
+	int		i;
+	char	*truc;
 
 	i = 0;
 	while (str[i - 1] != '\n' && str[i] != '\0')
 		i++;
 	truc = malloc (sizeof(char) * (i + 1));
+	if (!truc)
+		return (NULL);
 	i = 0;
 	while (str[i - 1] != '\n' && str[i] != '\0')
 	{
@@ -20,13 +22,14 @@ char 	*theline(char *str)
 		i++;
 	}
 	truc[i] = '\0';
+	free ((void*)str);
 	return (truc);
 }
 
 void 	thenextline(char *stock)
 {
-	int i;
-	int j;
+	int	i;
+	int	j;
 
 	i = 0;
 	j = 0;
@@ -44,7 +47,7 @@ void 	thenextline(char *stock)
 char	*ft_readstuff(int fd, int truclis, char *stock)
 {
 	char	*truc;
-	
+
 	truclis = BUFFER_SIZE;
 	truc = NULL;
 	while (truclis == BUFFER_SIZE)
@@ -54,7 +57,7 @@ char	*ft_readstuff(int fd, int truclis, char *stock)
 		truc = ft_strjoin(truc, stock);
 		if (truclis <= 0)
 			return (NULL);
-		if (ft_strchr(stock, '\n'))
+		if (ft_strchr(stock, '\n') || ft_strchr(stock, '\0'))
 			break ;
 	}
 	return (truc);
@@ -63,20 +66,20 @@ char	*ft_readstuff(int fd, int truclis, char *stock)
 char	*get_next_line(int fd)
 {
 	static char	stock[BUFFER_SIZE + 1];
-	char		*buffer;
+	char		*line;
 	int			truclis;
 
 	if (fd < 0 || BUFFER_SIZE <= 0 || read(fd, 0, 0) < 0)
 		return (NULL);
 	truclis = 0;
-	buffer = stock;
+	line = stock;
 	if (stock [0] == '\0')
-		buffer = ft_readstuff(fd, truclis, stock);
-	if (buffer == NULL)
+		line = ft_readstuff(fd, truclis, stock);
+	if (line == NULL)
 		return (NULL);
-	buffer = theline(buffer);
+	line = theline(line);
 	thenextline(stock);
-	return (buffer);
+	return (line);
 }
 
 int main ()
@@ -84,12 +87,14 @@ int main ()
 	char	*a;
 	int		file;
 
-	file = open("test.txt", O_RDONLY);
-	while (1)
+	file = open("test2.txt", O_RDONLY);
+	 while (1)
 	{
 		a = get_next_line(file);
 		if (a == NULL)
+		{
 			return (0);
+		}
 		printf("%s", a);
 		free(a);
 	}
