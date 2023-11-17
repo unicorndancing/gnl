@@ -4,9 +4,13 @@
 #include <fcntl.h>
 
 
-char *get_next_line(int fd);
-int	ft_strlen(const char *str);
-char	*ft_strdup(const char *s, int to_free);
-char	*ft_strjoin(char const *s1, char const *s2);
-void	*ft_memmove(void *dest, const void *src, size_t n);
-char	*ft_strchr(const char *s, int c);
+size_t			ft_strlen(char *str);
+
+
+char			*ft_strchr(char *s, int c);
+char			*ft_strjoin(char *s1, char *s2);
+char			*get_next_line(int fd);
+
+char			*ft_get_line(char *save);
+char			*ft_save(char *save);
+char			*ft_read_and_save(int fd, char *save);

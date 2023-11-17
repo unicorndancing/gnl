@@ -4,81 +4,96 @@
 // # define BUFFER_SIZE = 5
 // # endif
 
-char 	*theline(char *str)
+char	*ft_get_line(char *save)
 {
 	int		i;
-	char	*truc;
+	char	*s;
 
 	i = 0;
-	while (str[i - 1] != '\n' && str[i] != '\0')
+	if (!save[i])
+		return (NULL);
+	while (save[i] && save[i] != '\n')
 		i++;
-	truc = malloc (sizeof(char) * (i + 1));
-	if (!truc)
+	s = (char *)malloc(sizeof(char) * (i + 2));
+	if (!s)
 		return (NULL);
 	i = 0;
-	while (str[i - 1] != '\n' && str[i] != '\0')
+	while (save[i] && save[i] != '\n')
 	{
-		truc[i] = str[i];
+		s[i] = save[i];
 		i++;
 	}
-	truc[i] = '\0';
-	free ((void*)str);
-	return (truc);
+	if (save[i] == '\n')
+	{
+		s[i] = save[i];
+		i++;
+	}
+	s[i] = '\0';
+	return (s);
 }
 
-void 	thenextline(char *stock)
+char	*ft_save(char *save)
 {
-	int	i;
-	int	j;
+	int		i;
+	int		c;
+	char	*s;
 
 	i = 0;
-	j = 0;
-	while (stock[i - 1] != '\n' && stock[i] != '\0')
+	while (save[i] && save[i] != '\n')
 		i++;
-	while (stock[i])
+	if (!save[i])
 	{
-		stock[j] = stock[i];
-		i++;
-		j++;
+		free(save);
+		return (NULL);
 	}
-	stock[j] = '\0';
+	s = (char *)malloc(sizeof(char) * (ft_strlen(save) - i + 1));
+	if (!s)
+		return (NULL);
+	i++;
+	c = 0;
+	while (save[i])
+		s[c++] = save[i++];
+	s[c] = '\0';
+	free(save);
+	return (s);
 }
 
-char	*ft_readstuff(int fd, int truclis, char *stock)
+char	*ft_read_and_save(int fd, char *save)
 {
-	char	*truc;
+	char	*buff;
+	int		read_bytes;
 
-	truclis = BUFFER_SIZE;
-	truc = NULL;
-	while (truclis == BUFFER_SIZE)
+	buff = malloc((BUFFER_SIZE + 1) * sizeof(char));
+	if (!buff)
+		return (NULL);
+	read_bytes = 1;
+	while (!ft_strchr(save, '\n') && read_bytes != 0)
 	{
-		truclis = read(fd, stock, BUFFER_SIZE);
-		stock[truclis] = '\0';
-		truc = ft_strjoin(truc, stock);
-		if (truclis <= 0)
+		read_bytes = read(fd, buff, BUFFER_SIZE);
+		if (read_bytes == -1)
+		{
+			free(buff);
 			return (NULL);
-		if (ft_strchr(stock, '\n') || ft_strchr(stock, '\0'))
-			break ;
+		}
+		buff[read_bytes] = '\0';
+		save = ft_strjoin(save, buff);
 	}
-	return (truc);
+	free(buff);
+	return (save);
 }
 
 char	*get_next_line(int fd)
 {
-	static char	stock[BUFFER_SIZE + 1];
 	char		*line;
-	int			truclis;
+	static char	*save;
 
-	if (fd < 0 || BUFFER_SIZE <= 0 || read(fd, 0, 0) < 0)
+	if (fd < 0 || BUFFER_SIZE <= 0)
+		return (0);
+	save = ft_read_and_save(fd, save);
+	if (!save)
 		return (NULL);
-	truclis = 0;
-	line = stock;
-	if (stock [0] == '\0')
-		line = ft_readstuff(fd, truclis, stock);
-	if (line == NULL)
-		return (NULL);
-	line = theline(line);
-	thenextline(stock);
+	line = ft_get_line(save);
+	save = ft_save(save);
 	return (line);
 }
 
@@ -87,7 +102,7 @@ int main ()
 	char	*a;
 	int		file;
 
-	file = open("test2.txt", O_RDONLY);
+	file = open("test.txt", O_RDONLY);
 	 while (1)
 	{
 		a = get_next_line(file);
