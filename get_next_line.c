@@ -1,116 +1,127 @@
-#include "get_next_line.h"
-#include <stdio.h>
-// #ifndef BUFFER_SIZE
-// # define BUFFER_SIZE = 5
-// # endif
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   get_next_line.c                                    :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: elraira- <elraira-@student.42sp.org.br>    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2021/09/03 10:39:55 by elraira-          #+#    #+#             */
+/*   Updated: 2021/09/05 14:05:59 by elraira-         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
-char	*ft_get_line(char *save)
+#include "get_next_line.h"
+
+char	*ft_line(char *stock)
 {
 	int		i;
-	char	*s;
+	char	*str;
 
 	i = 0;
-	if (!save[i])
+	if (!stock[0])
 		return (NULL);
-	while (save[i] && save[i] != '\n')
+	while (stock[i] && stock[i] != '\n')
 		i++;
-	s = (char *)malloc(sizeof(char) * (i + 2));
-	if (!s)
+	str = (char *)malloc(sizeof(char) * (i + 2));
+	if (!str)
 		return (NULL);
 	i = 0;
-	while (save[i] && save[i] != '\n')
+	while (stock[i] && stock[i] != '\n')
 	{
-		s[i] = save[i];
+		str[i] = stock[i];
 		i++;
 	}
-	if (save[i] == '\n')
+	if (stock[i] == '\n')
 	{
-		s[i] = save[i];
+		str[i] = stock[i];
 		i++;
 	}
-	s[i] = '\0';
-	return (s);
+	str[i] = '\0';
+	return (str);
 }
 
-char	*ft_save(char *save)
+char	*ft_new_stock(char *stock)
 {
 	int		i;
-	int		c;
-	char	*s;
+	int		j;
+	char	*str;
 
 	i = 0;
-	while (save[i] && save[i] != '\n')
+	while (stock[i] && stock[i] != '\n')
 		i++;
-	if (!save[i])
+	if (!stock[i])
 	{
-		free(save);
+		free(stock);
 		return (NULL);
 	}
-	s = (char *)malloc(sizeof(char) * (ft_strlen(save) - i + 1));
-	if (!s)
+	str = (char *)malloc(sizeof(char) * (ft_strlen(stock) - i + 1));
+	if (!str)
 		return (NULL);
 	i++;
-	c = 0;
-	while (save[i])
-		s[c++] = save[i++];
-	s[c] = '\0';
-	free(save);
-	return (s);
+	j = 0;
+	while (stock[i])
+		str[j++] = stock[i++];
+	str[j] = '\0';
+	free(stock);
+	return (str);
 }
 
-char	*ft_read_and_save(int fd, char *save)
+char	*ft_read_and_stock(int fd, char *stock)
 {
-	char	*buff;
+	char	*temp_buffer;
 	int		read_bytes;
 
-	buff = malloc((BUFFER_SIZE + 1) * sizeof(char));
-	if (!buff)
+	temp_buffer = malloc((BUFFER_SIZE + 1) * sizeof(char));
+	if (!temp_buffer)
 		return (NULL);
 	read_bytes = 1;
-	while (!ft_strchr(save, '\n') && read_bytes != 0)
+	while (!ft_strchr(stock, '\n') && read_bytes > 0)
 	{
-		read_bytes = read(fd, buff, BUFFER_SIZE);
+		read_bytes = read(fd, temp_buffer, BUFFER_SIZE);
 		if (read_bytes == -1)
 		{
-			free(buff);
+			free(temp_buffer);
 			return (NULL);
 		}
-		buff[read_bytes] = '\0';
-		save = ft_strjoin(save, buff);
+		temp_buffer[read_bytes] = '\0';
+		stock = ft_strjoin(stock, temp_buffer);
 	}
-	free(buff);
-	return (save);
+	free(temp_buffer);
+	return (stock);
 }
 
 char	*get_next_line(int fd)
 {
 	char		*line;
-	static char	*save;
+	static char	*stock;
 
-	if (fd < 0 || BUFFER_SIZE <= 0)
+	if (fd < 0 || BUFFER_SIZE <= 0 || read(fd, 0, 0))
 		return (0);
-	save = ft_read_and_save(fd, save);
-	if (!save)
+	stock = ft_read_and_stock(fd, stock);
+	if (!stock)
 		return (NULL);
-	line = ft_get_line(save);
-	save = ft_save(save);
+	line = ft_line(stock);
+	stock = ft_new_stock(stock);
 	return (line);
 }
 
-int main ()
-{
-	char	*a;
-	int		file;
+#include <sys/types.h>
+       #include <sys/stat.h>
+       #include <fcntl.h>
+	   #include <stdio.h>
 
-	file = open("test.txt", O_RDONLY);
-	 while (1)
-	{
-		a = get_next_line(file);
-		if (a == NULL)
-		{
-			return (0);
-		}
-		printf("%s", a);
-		free(a);
-	}
-}
+// int main ()
+// {
+// 	int fd;
+// 	char *a;
+
+// 	fd = open("test.txt", O_RDONLY);
+// 	while (1)
+// 	{
+// 		a = get_next_line(fd);
+// 		if (a == NULL)
+// 			return (0);
+// 		printf("%s", a);
+// 		free(a);
+// 	}
+// }
