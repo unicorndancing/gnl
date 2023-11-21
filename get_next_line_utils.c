@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line_utils.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: elraira- <elraira-@student.42sp.org.br>    +#+  +:+       +#+        */
+/*   By: mlapique <mlapique@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/03 10:43:18 by elraira-          #+#    #+#             */
-/*   Updated: 2021/09/05 14:17:37 by elraira-         ###   ########.fr       */
+/*   Updated: 2023/11/21 19:38:18 by mlapique         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,8 +57,8 @@ char	*ft_strdup(char *s, int to_free)
 	if (!result)
 		return (0);
 	result = ft_memmove(result, s, len);
-	if (to_free == 1)
-		free ((void*)s);
+	if(to_free == 1)
+		free(s);
 	return (result);
 }
 
