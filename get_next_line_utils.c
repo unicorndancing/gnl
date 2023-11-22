@@ -6,7 +6,7 @@
 /*   By: mlapique <mlapique@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/03 10:43:18 by elraira-          #+#    #+#             */
-/*   Updated: 2023/11/21 19:38:18 by mlapique         ###   ########.fr       */
+/*   Updated: 2023/11/22 17:22:00 by mlapique         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,7 +87,7 @@ char	*ft_strjoin(char *s1, char *s2)
 	ft_memmove(result, s1, s1_len);
 	ft_memmove(result + s1_len, s2, s2_len);
 	result[totlen - 1] = '\0';
-	free ((void*)s1);
+	free (s1);
 	return (result);
 }
 

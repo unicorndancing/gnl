@@ -6,7 +6,7 @@
 /*   By: mlapique <mlapique@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/03 10:39:55 by elraira-          #+#    #+#             */
-/*   Updated: 2023/11/21 20:22:35 by mlapique         ###   ########.fr       */
+/*   Updated: 2023/11/22 18:22:48 by mlapique         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,9 @@ char	*ft_line(char *line)
 	i = 0;
 	while (line[i] && line[i] != '\n')
 		i++;
-	str = (char *)malloc(sizeof(char) * (i + 2));
+	if (line[i] == '\n')
+		i++;
+	str = (char *)malloc(sizeof(char) * (i + 1));
 	if (!str)
 		return (NULL);
 	i = 0;
@@ -59,12 +61,10 @@ char	*ft_read_and_stock(int fd, char *stock)
 {
 	char	*temp_buffer;
 	int		read_bytes;
-	// static int con = 2;
 
 	temp_buffer = malloc((BUFFER_SIZE + 1) * sizeof(char));
 	if (!temp_buffer)
 	{
-		free(temp_buffer);
 		return (NULL);
 	}
 	temp_buffer[0] = '\0';
@@ -73,9 +73,8 @@ char	*ft_read_and_stock(int fd, char *stock)
 	while (!ft_strchr(stock, '\n') && read_bytes > 0)
 	{
 		read_bytes = read(fd, stock, BUFFER_SIZE);
-		// con--;
-		// if (con == 0)
-		// 	read_bytes = -1;
+		if (read_bytes <= 0 && stock[0] != '\0')
+			return (temp_buffer);
 		if ((read_bytes == 0 && stock[0] == '\0') || read_bytes < 0)
 		{
 			free(temp_buffer);
@@ -105,23 +104,23 @@ char	*get_next_line(int fd)
 	return (line);
 }
 
-// #include <sys/types.h>
-// #include <sys/stat.h>
-// #include <fcntl.h>
-// #include <stdio.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+#include <stdio.h>
 
-// int main ()
-// {
-// 	int fd;
-// 	char *a;
+int main ()
+{
+	int fd;
+	char *a;
 
-// 	fd = open("test.txt", O_RDONLY);
-// 	while (1)
-// 	{
-// 		a = get_next_line(fd);
-// 		if (a == NULL)
-// 			return (0);
-// 		printf("%s", a);
-// 		free(a);
-// 	}
-// }
+	fd = open("test.txt", O_RDONLY);
+	while (1)
+	{
+		a = get_next_line(fd);
+		if (a == NULL)
+			return (0);
+		printf("%s", a);
+		free(a);
+	}
+}
