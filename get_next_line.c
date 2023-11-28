@@ -6,7 +6,7 @@
 /*   By: mlapique <mlapique@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/03 10:39:55 by elraira-          #+#    #+#             */
-/*   Updated: 2023/11/22 18:22:48 by mlapique         ###   ########.fr       */
+/*   Updated: 2023/11/28 13:42:07 by mlapique         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,8 +70,9 @@ char	*ft_read_and_stock(int fd, char *stock)
 	temp_buffer[0] = '\0';
 	read_bytes = 1;
 	temp_buffer = ft_strjoin(temp_buffer, stock);
-	while (!ft_strchr(stock, '\n') && read_bytes > 0)
+	while (!ft_strchr(stock, '\n'))
 	{
+		read_bytes = -1;
 		read_bytes = read(fd, stock, BUFFER_SIZE);
 		if (read_bytes <= 0 && stock[0] != '\0')
 			return (temp_buffer);
@@ -89,38 +90,46 @@ char	*ft_read_and_stock(int fd, char *stock)
 char	*get_next_line(int fd)
 {
 	char		*line;
-	static char	stock[BUFFER_SIZE + 1];
+	static char	stock[1024][BUFFER_SIZE + 1];
 
 	if (fd < 0 || BUFFER_SIZE <= 0 || read(fd, 0, 0))
 		return (0);
-	line = ft_read_and_stock(fd, stock);
+	line = ft_read_and_stock(fd, stock[fd]);
 	if (!line)
 	{
 		free(line);
 		return (NULL);
 	}
 	line = ft_line(line);
-	ft_new_stock(stock);
+	ft_new_stock(stock[fd]);
 	return (line);
 }
 
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <fcntl.h>
-#include <stdio.h>
+// #include <sys/types.h>
+// #include <sys/stat.h>
+// #include <fcntl.h>
+// #include <stdio.h>
 
-int main ()
-{
-	int fd;
-	char *a;
+// int main ()
+// {
+// 	int fd;
+// 	char *a;
+// 	int fd2;
 
-	fd = open("test.txt", O_RDONLY);
-	while (1)
-	{
-		a = get_next_line(fd);
-		if (a == NULL)
-			return (0);
-		printf("%s", a);
-		free(a);
-	}
-}
+// 	fd = open("test.txt", O_RDONLY);
+// 	fd2 = open("test2.txt", O_RDONLY);
+// 	while (1)
+// 	{
+// 		a = get_next_line(fd);
+// 		if (a == NULL)
+// 			return (0);
+// 		printf("%s", a);
+// 		free(a);
+// 		printf("%c", '\n');
+// 		a = get_next_line(fd2);
+// 		if (a == NULL)
+// 			return (0);
+// 		printf("%s", a);
+// 		free(a);
+// 	}
+// }
