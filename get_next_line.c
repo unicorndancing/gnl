@@ -6,7 +6,7 @@
 /*   By: mlapique <mlapique@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/03 10:39:55 by elraira-          #+#    #+#             */
-/*   Updated: 2023/12/06 14:00:38 by mlapique         ###   ########.fr       */
+/*   Updated: 2023/12/09 09:53:24 by mlapique         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,17 +87,17 @@ char	*ft_read_and_stock(int fd, char *stock)
 char	*get_next_line(int fd)
 {
 	char		*line;
-	static char	stock[1024][BUFFER_SIZE + 1];
+	static char	stock[BUFFER_SIZE + 1];
 
 	if (fd < 0 || BUFFER_SIZE <= 0 || fd >= 1024)
 		return (NULL);
-	line = ft_read_and_stock(fd, stock[fd]);
+	line = ft_read_and_stock(fd, stock);
 	if (!line)
 	{
 		free(line);
 		return (NULL);
 	}
 	line = ft_line(line);
-	ft_new_stock(stock[fd]);
+	ft_new_stock(stock);
 	return (line);
 }
